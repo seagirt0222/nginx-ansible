@@ -1,0 +1,12 @@
+- name: get variables
+  debug:
+    msg: 
+    - "http: {{ Docker_ContainerPortHTTP }}"
+    - "https: {{ Docker_ContainerPortHTTPS }}"
+    - "container name: {{ Docker_ContainerName }}"
+    - "docker compose path: {{ Docker_Compose_Dir }}"
+    - "ssl dir path: {{ var_ssl_dir }}"
+    - "build version: {{build_version}}"
+    - "target: {{ target }}"
+    - "applyHosts: {{ applyHosts }}"
+    - "template docker-compose.yml: {{ docker_compose_template_path }}"

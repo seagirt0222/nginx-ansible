@@ -1,0 +1,18 @@
+- import_playbook: download_ssl.yml
+
+- name: Deploy nginx images 
+  hosts: "{{ applyHosts }}"
+  become: yes
+  vars:
+    docker_compose_template_path: "../templates/nginx/docker.j2"
+    
+  vars_files:
+    - "../vars/{{ target }}.yml"
+    - "vars/ssl_vars.yml"
+    - "vars/deploy_nginx_vars.yml"
+
+  tasks:
+    - import_tasks: tasks/copy_ssl.yml
+    - import_tasks: tasks/show_nginx_vars.yml
+    - import_tasks: tasks/nginx_container.yml
+    - import_tasks: tasks/nginx_check_status.yml

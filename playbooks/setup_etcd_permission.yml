@@ -1,0 +1,11 @@
+---
+- name: Create Etcd Cluster
+  hosts: "{{ applyHosts }}"
+  become: yes
+  vars:
+      ip: "{{hostvars[inventory_hostname]['ansible_default_ipv4']['address']}}"
+      script_path: "templates/etcd_cluster/scripts"
+      
+  tasks:
+    # add permission
+    - import_tasks: tasks/setup_etcd_permission.yml

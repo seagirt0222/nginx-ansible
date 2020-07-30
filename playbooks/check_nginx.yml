@@ -1,0 +1,19 @@
+- name: check nginx status
+  hosts: "{{ applyHosts }}"
+  vars:
+    Base_Dir: "/tmp/gjsoft"
+    Build_Version: "{{build_version}}" 
+    Build_Dir: "{{ Base_Dir }}/docker/images" 
+    Build_Name: "nginx_proxy_{{Build_Version}}"
+    Build_File: "{{Build_Dir}}/{{Build_Name}}.tgz" 
+    Build_ImageName: "nginx_proxy:{{Build_Version}}"
+    Docker_Compose_Dir: "{{ Base_Dir }}/docker/deploy/{{ target }}"
+    Docker_Compose_File: "{{Docker_Compose_Dir}}/docker-compose.yml"
+    Docker_Compose_File_Env: "{{Docker_Compose_Dir}}/.env"
+    Docker_ImagePath: "registry.gjsoft.local:5000/gjsoft/{{ Build_ImageName }}"
+  
+  vars_files:
+    - "../vars/{{ target }}.yml"
+  
+  tasks:
+    - include_tasks: tasks/check_nginx.yml

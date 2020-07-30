@@ -1,0 +1,61 @@
+- name: backup etcd
+  hosts: "{{ applyHosts }}"
+  become: yes
+  gather_facts: no
+  vars:
+    Base_Dir: "/var/gjsoft/" 
+    Backup_Dir: "/var/gjsoft/backup/etcd" 
+  tasks:
+
+    - name: get variables
+      debug:
+        msg: 
+        - "etcdctl endpoints: {{ ETCDCTL_ENDPOINTS }}"
+
+    - name: create bakcup dir "{{Backup_Dir}}"
+      file:
+        path: "{{Backup_Dir}}"
+        state: directory
+
+    - name: Check that the etcdctl exists
+      stat:
+        path: "/usr/local/bin/etcdctl"
+      register: etcd_install
+
+    - name: set install etcdctl
+      template:
+        src: "../templates/install_etcctl.sh"
+        dest: "{{ Base_Dir }}/install_etcctl.sh"
+        mode: "u=rwx,g=r,o=r"
+      when: etcd_install.stat.exists == False
+      
+    - name: install etcdctl 
+      shell: "{{ Base_Dir }}/install_etcctl.sh"
+      when: etcd_install.stat.exists == False
+
+    # backup shell script 
+    - name: set backup script
+      template:
+        src: "../templates/etcdexport.sh"
+        dest: "{{ Backup_Dir }}/backup.sh"
+        mode: "u=rwx,g=r,o=r"
+
+    - name: setup backup schdule
+      cron:
+        name: "backup schdule"
+        hour: "*"
+        minute: "0"
+        job: "sudo {{ Backup_Dir }}/backup.sh"
+
+    - name: execute backup
+      shell: "{{ Backup_Dir }}/backup.sh"
+      args:
+          chdir: "{{ Backup_Dir }}"
+
+    - name: execute backup
+      shell: "ls -lah {{ Backup_Dir }}"
+      register: backfiles
+
+    - name: show containers
+      debug:
+        var: backfiles.stdout_lines

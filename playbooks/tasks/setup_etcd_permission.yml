@@ -1,0 +1,31 @@
+      
+- name: generation the Etcd_User_Permission_Add.sh file
+  template:
+    src: "{{script_path}}/Etcd_User_Permission_Add.sh"
+    dest: "{{deploy_path}}/Etcd_User_Permission_Add.sh"
+
+- name: generation the Check Etcd User Permission file
+  template:
+    src: "{{script_path}}/Check_Etcd_User_Permission.sh"
+    dest: "{{deploy_path}}/Check_Etcd_User_Permission.sh"
+
+- name: execute Etcd_User_Permission_Add
+  shell: "sh {{ deploy_path }}/Etcd_User_Permission_Add.sh"
+
+- name: execute Check_Etcd_User_Permission
+  shell: "sh {{ deploy_path }}/Etcd_User_Permission_Add.sh"
+  register: etcd_permission
+
+- name: show permission status
+  debug:
+    var: etcd_permission.stdout_lines
+
+- name: delete file Etcd_User_Permission_Add
+  file:
+    path: "{{ deploy_path }}/Etcd_User_Permission_Add.sh"
+    state: absent
+
+- name: delete file Check_Etcd_User_Permission
+  file:
+    path: "{{ deploy_path }}/Check_Etcd_User_Permission.sh"
+    state: absent

@@ -1,0 +1,10 @@
+- name: nginx logrotate
+  hosts: nginx
+  sudo: yes
+  tasks:
+    - name: set nginx log rotate
+      template:
+        src: "../templates/etc/logrotate.d/nginx"
+        dest: "/etc/logrotate.d/nginx"
+        mode: "u=rw,g=r,o=r"
+

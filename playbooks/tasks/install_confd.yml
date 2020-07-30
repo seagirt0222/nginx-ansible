@@ -1,0 +1,15 @@
+- name: Download confd-0.16.0-linux-amd64
+  get_url:
+    url: https://github.com/kelseyhightower/confd/releases/download/v0.16.0/confd-0.16.0-linux-amd64
+    dest: /usr/sbin/confd
+    mode: '0775'
+
+- name: "create deploy dir /etc/confd/conf.d"
+  file:
+    path: "/etc/confd/conf.d"
+    state: directory
+
+- name: "create deploy dir /etc/confd/templates"
+  file:
+    path: "/etc/confd/templates"
+    state: directory

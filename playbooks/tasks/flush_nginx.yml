@@ -1,0 +1,10 @@
+- name: check container
+  shell: "docker exec -i {{ Docker_ContainerName }} sh /code/etcdsync.sh"
+  args:
+    chdir: "{{ Docker_Compose_Dir }}"
+  register: nginx_status
+
+- name: nginx status
+  debug:
+    var: nginx_status
+

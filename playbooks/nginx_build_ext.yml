@@ -1,0 +1,36 @@
+- hosts: "{{ applyHosts }}"
+  roles:
+    - role: ypsman.docker_compose
+      sudo: yes
+      #docker_compose_version: "1.9.0"  # optional
+
+- import_playbook: download_ssl.yml
+
+- name: Deploy nginx images 
+  hosts: "{{ applyHosts }}"
+  sudo: yes
+  vars:
+    docker_compose_template_path: "../templates/nginx/docker-compose-ext_build.j2"
+
+  vars_files:
+    - "../vars/{{ target }}.yml"
+    - "vars/ssl_vars.yml"
+    - "vars/deploy_nginx_vars.yml"
+
+  tasks:
+    - import_tasks: tasks/copy_ssl.yml
+
+    - import_tasks: tasks/show_nginx_vars.yml
+
+    - name: "Clean {{Docker_Compose_Dir}}"
+      file:
+        state: absent
+        path: "{{ Docker_Compose_Dir }}/"
+    
+    - import_tasks: tasks/nginx_container.yml
+   
+    - import_tasks: tasks/nginx_check_status.yml
+
+    - import_tasks: tasks/nginx_conf_ext.yml
+
+    - import_tasks: tasks/compress_image.yml

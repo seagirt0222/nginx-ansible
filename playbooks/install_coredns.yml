@@ -1,0 +1,49 @@
+- name: install CoreDNS
+  hosts: "{{ applyHosts }}"
+  become: yes
+  gather_facts: no
+  vars:
+    Base_Dir: "templates/coredns" 
+    deploy_path: "/var/gjsoft/coredns" 
+  tasks:
+    - name: create coredns dir "{{deploy_path}}"
+      file:
+        path: "{{deploy_path}}"
+        state: directory
+
+    - name: copy docker-compose to dir
+      template:
+        src: "{{ Base_Dir }}/docker-compose.yml"
+        dest: "{{ deploy_path }}/docker-compose.yml"
+        mode: "u=rw,g=r,o=r"
+        
+    - name: copy shell script to dir
+      template:
+        src: "{{ Base_Dir }}/run.sh"
+        dest: "{{ deploy_path }}/run.sh"
+        mode: "u=rwx,g=r,o=r"
+        
+    - name: copy Corefile to dir
+      template:
+        src: "{{ Base_Dir }}/Corefile"
+        dest: "{{ deploy_path }}/Corefile"
+        mode: "u=rw,g=rw,o=r"
+
+    - name: remove container {{ coredns_container_name }}
+      shell: "docker rm -f {{ coredns_container_name }}"
+      args:
+        chdir: "{{ deploy_path }}"
+      ignore_errors: yes
+
+    - name: start container {{ coredns_container_name }}
+      shell: "sh {{deploy_path}}/run.sh"
+
+    - name: get container
+      shell: "docker ps | grep {{ coredns_container_name }}"
+      args:
+        chdir: "{{ deploy_path }}"
+      register: _containers
+
+    - name: show containers
+      debug:
+        var: _containers.stdout_lines

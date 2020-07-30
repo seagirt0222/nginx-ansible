@@ -1,0 +1,14 @@
+
+    - name: generation the Check_Etcd_cluster.sh file
+      template:
+        src: "{{script_path}}/Check_Etcd_cluster.sh"
+        dest: "{{ deploy_path }}/Check_Etcd_cluster.sh"
+           
+    - name: Check Etcd cluster
+      shell: "sh {{ deploy_path }}/Check_Etcd_cluster.sh"
+      register: result
+
+    - name:  check Etcd Clustre result
+      when: result.stdout == "Ok"
+      debug:
+        msg: "{{result.stdout}}"      

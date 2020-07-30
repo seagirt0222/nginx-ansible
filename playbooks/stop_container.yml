@@ -1,0 +1,26 @@
+- hosts: "{{ applyHosts }}"
+  roles:
+    - role: ypsman.docker_compose
+      sudo: yes
+      #docker_compose_version: "1.9.0"  # optional
+
+- name: Deploy nginx images 
+  hosts: "{{ applyHosts }}"
+  sudo: yes
+  vars:
+
+  vars_files:
+    - "../vars/{{ target }}.yml"
+    - "vars/deploy_nginx_vars.yml"
+
+  tasks:
+
+    - name: check container env info
+      shell: "docker stop {{ Docker_ContainerName }}"
+      args:
+        chdir: "{{ Docker_Compose_Dir }}"
+      register: env_info
+
+    - name: show env info
+      debug:
+        var: env_info

@@ -1,0 +1,14 @@
+- name: get variables
+  debug:
+    msg: 
+    - "ssl dir path: {{ var_ssl_dir }}"
+
+- name: create dir "{{ var_ssl_dir }}"
+  file:
+    path: "{{var_ssl_dir}}"
+    state: directory
+
+- name: "Extract ssl.tgz into {{ var_ssl_dir }}"
+  unarchive:
+    src: "{{ var_ssl_repo_dir }}.tgz"
+    dest: "{{ var_ssl_dir }}"

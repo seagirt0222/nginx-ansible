@@ -1,0 +1,7 @@
+- shell: "docker exec -i {{ Docker_ContainerName }} nginx -t"
+  args:
+    chdir: "{{ Docker_Compose_Dir }}"
+  register: nginx_status
+
+- debug:
+    var: nginx_status

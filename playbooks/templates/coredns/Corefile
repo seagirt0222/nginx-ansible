@@ -1,0 +1,17 @@
+. {
+    forward . 8.8.8.8:53 {
+        except gjsoft.local 
+        except a01.local 
+    }
+    etcd gjsoft.local a01.local {
+        stubzones
+        path /a01/coredns
+        endpoint {{ etcdctl_endpoints }}
+        credentials {{ coredns_etcd_auth }}
+    }
+    cache 300
+    #prometheus     # enable metrics
+    errors # show errors
+    #log    # show query logs
+	debug
+}

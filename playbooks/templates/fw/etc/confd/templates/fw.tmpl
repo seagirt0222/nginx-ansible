@@ -1,0 +1,35 @@
+#!/bin/bash
+
+chainName="block-ip"
+chain=$(iptables -L $chainName -w 2> /dev/null| grep Chain)
+
+# remove block-ip
+#iptables -X block-ip
+
+if [ -z "$chain" ]
+then
+    echo "create chain $chainName"
+    iptables -N $chainName
+else
+    echo "chain $chainName is exists"
+fi
+
+# check chain in input
+chainInput=$(iptables -L INPUT -w 2> /dev/null| grep $chainName)
+if [ -z "$chainInput" ]
+then
+    echo "create rule in input"
+    iptables -I INPUT -j $chainName
+else
+    echo "rule $chainName is exists in input"
+fi
+
+iptables -F $chainName
+iptables -A $chainName -j RETURN
+# block ip {{ '{{ range getvs "/fw/block/*" }}' }}
+iptables -I $chainName -s {{ '{{ . }}' }} {{ '{{ end }}' }} -j DROP
+
+for VAR in 59.125.119.35 103.96.3.211 10.85.4.0/24 127.0.0.1/24
+do
+    iptables -I $chainName -s $VAR -j ACCEPT
+done

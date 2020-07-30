@@ -1,0 +1,12 @@
+- name: keepalived
+  hosts: "{{ applyHosts }}"
+  vars:
+      keepalived_script_dir: "/var/keepalived"
+  vars_files:
+    - "../vars/keepalived/{{ keepalived_env }}.yml"
+  become: yes
+  tasks:
+    - name: Update repositories cache and install keepalived package
+      apt:
+        name: keepalived
+        update_cache: yes

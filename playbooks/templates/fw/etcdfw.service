@@ -1,0 +1,14 @@
+[Unit]
+Description=etcd fw
+
+[Service]
+#ExecStartPre=/usr/sbin/sshd-keygen
+ExecStart=/usr/sbin/confd -interval 3 -backend etcdv3 -node {{ FW_ETCDCTL_ENDPOINTS }}
+#ExecReload=/bin/kill –HUP $MAINPID
+User=root
+KillMode=process
+Restart=on-failure
+RestartSec=42s
+
+[Install]
+WantedBy=multi-user.target

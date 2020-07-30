@@ -1,0 +1,25 @@
+- name: download ssl from repo
+  hosts: registry
+  become: yes
+  gather_facts: no
+  vars_files:
+    - "vars/ssl_vars.yml"
+  tasks:
+    - name: get variables
+      debug:
+        msg: 
+        - "repo key file: {{ Key_File }}"
+
+    - name: git clone repo
+      git:
+        repo: '{{ ssl_repo }}'
+        dest: "{{ var_ssl_repo_dir }}"
+        version: "master"
+        update: yes
+        accept_hostkey: yes
+        key_file: "{{ Key_File }}"
+
+    - name: "Compress directory {{ var_ssl_repo_dir }} to {{ var_ssl_repo_dir }}.tgz"
+      archive:
+        path: "{{ var_ssl_repo_dir }}/data"
+        dest: "{{ var_ssl_repo_dir }}.tgz"

@@ -1,0 +1,30 @@
+- name: create deploy dir "{{Docker_Compose_Dir}}"
+  file:
+    path: "{{Docker_Compose_Dir}}"
+    state: directory
+
+- name: "copy templates/run.sh"
+  copy:
+    src: "../templates/run.sh"
+    dest: "{{ Docker_Compose_Dir }}/"
+    mode: "u=rwx,g=r,o=r"
+
+- name: "copy Remove_Container.sh"
+  copy:
+    src: "../templates/Remove_Container.sh"
+    dest: "{{ Docker_Compose_Dir }}/remove.sh"
+    mode: "u=rwx,g=r,o=r"
+
+- name: set remote .env for docker-compose.yml
+  template:
+    src: "../templates/env/{{ Docker_Env }}.j2"
+    dest: "{{ Docker_Compose_File_Env }}"
+    mode: "u=rw,g=r,o=r"
+
+- name: "set remote docker-compose.yml"
+  template:
+    src: "{{ docker_compose_template_path }}"
+    dest: "{{ Docker_Compose_File }}"
+    mode: "u=rw,g=r,o=r"
+
+- import_tasks: task_nginx_container_recreate.yml

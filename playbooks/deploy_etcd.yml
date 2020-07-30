@@ -1,0 +1,47 @@
+- name: Deploy nginx images 
+  hosts: local
+  become: yes
+  vars:
+    Base_Dir: "/tmp/gjsoft"
+    Docker_Compose_Dir: "{{ Base_Dir }}/docker/deploy/etcd"
+    Docker_Compose_File: "{{Docker_Compose_Dir}}/docker-compose.yml"
+
+  tasks:
+
+    - name: get variables
+      debug:
+        msg: 
+        - "container name: {{ Docker_ContainerName }}"
+
+    - name: create deploy dir "{{Docker_Compose_Dir}}"
+      file:
+        path: "{{Docker_Compose_Dir}}"
+        state: directory
+
+    - name: "copy templates/run.sh"
+      copy:
+        src: "../templates/run.sh"
+        dest: "{{ Docker_Compose_Dir }}/"
+        mode: "u=rwx,g=r,o=r"
+
+    - name: "copy Remove_Container.sh"
+      copy:
+        src: "../templates/Remove_Container.sh"
+        dest: "{{ Docker_Compose_Dir }}/remove.sh"
+        mode: "u=rwx,g=r,o=r"
+
+    - name: set remote docker-compose.yml
+      template:
+        src: "../templates/etcd/docker-compose.j2"
+        dest: "{{ Docker_Compose_File }}"
+        mode: "u=rw,g=r,o=r"
+
+    - name: "remove container {{ Docker_ContainerName }}"
+      docker_container:
+        name: "{{ Docker_ContainerName }}"
+        state: absent
+
+    - name: start container
+      shell: "docker-compose -f {{Docker_Compose_File}} up -d --force-recreate"
+      args:
+        chdir: "{{ Docker_Compose_Dir }}"

@@ -1,0 +1,22 @@
+- name: setup docker private registry 
+  hosts: "{{ applyHosts }}"
+  sudo: yes
+  vars:
+    Base_Dir: "/tmp/gjsoft"
+  tasks:
+
+    - name: create deploy dir "{{ Base_Dir }}"
+      file:
+        path: "{{ Base_Dir }}"
+        state: directory
+    
+    - name: set remote setup_registry.sh
+      template:
+        src: "../templates/setup_registry.sh"
+        dest: "{{ Base_Dir }}/setup_registry.sh"
+        mode: "u=rwx,g=r,o=r"
+
+  #    - name: "run {{ Base_Dir }}/setup_registry.sh"
+  #      shell: "{{ Base_Dir }}/setup_registry.sh"
+  #      args:
+  #        chdir: "{{ Docker_Compose_Dir }}"

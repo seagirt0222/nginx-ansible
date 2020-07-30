@@ -1,0 +1,17 @@
+- import_playbook: download_ssl.yml
+
+- name: Deploy nginx images 
+  hosts: "{{ applyHosts }}"
+  become: yes
+  vars:
+    var_ssl_dir: "{{ certs_dir }}"
+  vars_files:
+    - "vars/ssl_vars.yml"
+
+  tasks:
+    - name: create deploy dir "{{ var_ssl_dir }}"
+      file:
+        path: "{{ var_ssl_dir }}"
+        state: directory
+        
+    - import_tasks: tasks/copy_ssl.yml

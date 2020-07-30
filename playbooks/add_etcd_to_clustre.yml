@@ -1,0 +1,20 @@
+---
+- name: Add Etcd to Clustre
+  hosts: "{{ applyHosts }}"
+  become: yes
+  vars:
+      script_path: "templates/etcd_cluster/scripts"
+      ip: "{{hostvars[inventory_hostname]['ansible_default_ipv4']['address']}}"
+
+  tasks:
+    - import_tasks: tasks/create_etcd_cluster_env.yml
+    - import_tasks: tasks/Install_etcd_to_VM.yml
+
+    - name: Add etcd to Clustre Member
+      shell: "sh {{ deploy_path }}/Etcd_Add_Clustre.sh"
+
+    - name: Add etcd to Clustre
+      shell: "sh {{ deploy_path }}/create_etcd_clustre.sh"
+
+    - import_tasks: tasks/Check_Etcd_Cluster.yml
+    

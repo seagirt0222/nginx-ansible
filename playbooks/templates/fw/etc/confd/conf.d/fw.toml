@@ -1,0 +1,10 @@
+[template]
+prefix = "/a01"
+src = "fw.tmpl"
+dest = "/var/gjsoft/fw"
+owner = "root"
+mode = "0666"
+keys = [
+    "/fw",
+]
+reload_cmd = "bash /var/gjsoft/fw"

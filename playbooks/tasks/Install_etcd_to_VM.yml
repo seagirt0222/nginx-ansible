@@ -1,0 +1,13 @@
+- name: check has install etcd 
+  shell: "echo $(etcdctl -v 2> /dev/stdout)"
+  register: etcdresult
+
+- name: generation the Install_Etcd_V3.3.1.sh file
+  template:
+    src: "{{script_path}}/Install_Etcd_V3.3.1.sh"
+    dest: "{{ deploy_path }}/Install_Etcd_V3.3.1.sh"
+  when: etcdresult.stdout.find('etcdctl version') == -1        
+  
+- name: Install etcd:V3.3.1 
+  shell: "sh {{ deploy_path }}/Install_Etcd_V3.3.1.sh"
+  when: etcdresult.stdout.find('etcdctl version') == -1

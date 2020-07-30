@@ -1,0 +1,22 @@
+- name: Check that the {{ Build_File }} exists
+  stat:
+    path: "{{ Build_File }}"
+  register: stat_result
+
+- name: create deploy dir "{{Build_Dir}}"
+  file:
+    path: "{{Build_Dir}}"
+    state: directory
+  when: stat_result.stat.exists == False 
+
+- name: "copy {{ Build_File }}"
+  copy:
+    src: "{{ Build_File }}"
+    dest: "{{ Build_File }}"
+    mode: "u=rw,g=rw,o=r"
+  when: stat_result.stat.exists == False
+
+- name: "docker load image {{ Build_File }}"
+  shell: "docker load -i {{ Build_File }}"
+  args:
+    chdir: "{{ Build_Dir }}"

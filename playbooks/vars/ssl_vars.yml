@@ -1,0 +1,2 @@
+var_ssl_repo_dir: "/usr/local/src/nginx-ssl"
+var_ssl_dir: "/var/gjsoft/certs"

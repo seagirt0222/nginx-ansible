@@ -1,0 +1,46 @@
+- name: install confd fw 
+  hosts: "{{ applyHosts }}"
+  become: yes
+  vars:
+    
+  vars_files:
+
+  tasks:
+    - import_tasks: tasks/install_confd.yml
+
+    - name: "create deploy dir /var/gjsoft"
+      file:
+        path: "/var/gjsoft"
+        state: directory
+
+    - name: set /etc/confd/conf.d/fw.toml
+      template:
+        src: "templates/fw/etc/confd/conf.d/fw.toml"
+        dest: "/etc/confd/conf.d/fw.toml"
+        mode: "u=rw,g=r,o=r"
+
+    - name: set /etc/confd/templates/fw.tmpl
+      template:
+        src: "templates/fw/etc/confd/templates/fw.tmpl"
+        dest: "/etc/confd/templates/fw.tmpl"
+        mode: "u=rw,g=r,o=r"
+
+    - name: set /etc/systemd/system/etcdfw.service
+      template:
+        src: "templates/fw/etcdfw.service"
+        dest: "/etc/systemd/system/etcdfw.service"
+        mode: "u=rw,g=r,o=r"
+
+    - name: Make sure a service is running - etcdfw
+      systemd:
+        state: restarted
+        daemon_reload: yes
+        name: etcdfw
+
+    - name: check etcdfw
+      shell: "systemctl status etcdfw"
+      register: check
+
+    - name: check status
+      debug:
+        var: check

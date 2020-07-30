@@ -1,0 +1,9 @@
+- name: "remove container {{ Docker_ContainerName }}"
+  docker_container:
+    name: "{{ Docker_ContainerName }}"
+    state: absent
+
+- name: start container
+  shell: "docker-compose -f {{Docker_Compose_File}} up -d --force-recreate"
+  args:
+    chdir: "{{ Docker_Compose_Dir }}"

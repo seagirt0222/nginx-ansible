@@ -1,0 +1,56 @@
+- name: create deploy dir "{{Docker_Compose_Dir}}/tests"
+  file:
+    path: "{{Docker_Compose_Dir}}/tests"
+    state: directory
+    
+- name: set remote test script
+  template:
+    src: "../templates/tests/test_apicenter.j2"
+    dest: "{{ Docker_Compose_Dir }}/tests/test.sh"
+    mode: "u=rwx,g=r,o=r"
+
+- name: set remote test script for keepalived
+  template:
+    src: "../templates/tests/test_http_keepalived.j2"
+    dest: "{{ Docker_Compose_Dir }}/tests/test_keepalived.sh"
+    mode: "u=rwx,g=r,o=r"
+
+- name: check container env info
+  shell: "docker exec -i {{ Docker_ContainerName }} env"
+  args:
+    chdir: "{{ Docker_Compose_Dir }}"
+  register: env_info
+
+- name: show env info
+  debug:
+    var: env_info
+
+- name: check container
+  shell: "docker exec -i {{ Docker_ContainerName }} nginx -t"
+  args:
+    chdir: "{{ Docker_Compose_Dir }}"
+  register: nginx_status
+
+- name: nginx status
+  debug:
+    var: nginx_status
+
+- name: check url
+  shell: "./tests/test.sh"
+  args:
+    chdir: "{{ Docker_Compose_Dir }}"
+  register: nginx_check
+
+- name: nginx check
+  debug:
+    var: nginx_check
+
+- name: test url for keepalived
+  shell: "./tests/test_keepalived.sh"
+  args:
+    chdir: "{{ Docker_Compose_Dir }}"
+  register: nginx_check
+
+- name: show test result for keepalived 
+  debug:
+    var: nginx_check

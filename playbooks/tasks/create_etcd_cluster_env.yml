@@ -1,0 +1,19 @@
+- name: create deploy dir "{{ deploy_path }}"
+  file:
+    path: "{{ deploy_path }}"
+    state: directory
+
+- name: generation the Etcd_Add_Clustre.sh file
+  template:
+    src: "{{script_path}}/Etcd_Add_Clustre.sh"
+    dest: "{{ deploy_path }}/Etcd_Add_Clustre.sh"  
+
+- name: generation the create_etcd_clustre.sh file
+  template:
+    src: "{{script_path}}/create_etcd_clustre.sh"
+    dest: "{{ deploy_path }}/create_etcd_clustre.sh"  
+
+- name: generation the docker-compose.yml file
+  template:
+    src: "templates/etcd_cluster/docker-compose.yml"
+    dest: "{{ deploy_path }}/docker-compose.yml"  

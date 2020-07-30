@@ -1,0 +1,8 @@
+#!/bin/sh
+
+
+sed -i 's/listen 80/listen {{ Docker_ContainerPortHTTP }}/g' {{ Docker_Compose_Dir }}/nginx/nginx.conf
+sed -i 's/listen 443 ssl/listen {{ Docker_ContainerPortHTTPS }} ssl/g' {{ Docker_Compose_Dir }}/nginx/nginx.conf
+
+sed -i 's/listen 80/listen {{ Docker_ContainerPortHTTP }}/g' {{ Docker_Compose_Dir }}/nginx/conf.d/*
+sed -i 's/listen 443 ssl/listen {{ Docker_ContainerPortHTTPS }} ssl/g' {{ Docker_Compose_Dir }}/nginx/conf.d/*

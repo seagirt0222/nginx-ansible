@@ -1,0 +1,16 @@
+---
+version: '3.1'
+services:
+  coredns:
+    image: coredns/coredns
+    container_name: {{ coredns_container_name }} 
+    restart: always
+    ports:
+      - '{{ coredns_port }}:53'
+      - '{{ coredns_port }}:53/udp'
+    volumes:
+      - './Corefile:/etc/coredns/Corefile'
+      - './zones/:/etc/coredns/zones/'
+    command: -conf /etc/coredns/Corefile
+
+      

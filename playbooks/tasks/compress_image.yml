@@ -1,0 +1,3 @@
+- shell: "docker save {{ Docker_ImagePath }} > {{ Build_File }}"
+  args:
+    chdir: "{{ Docker_Compose_Dir }}"

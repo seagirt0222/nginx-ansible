@@ -1,0 +1,36 @@
+---
+- name: Create Etcd Cluster
+  hosts: "{{ applyHosts }}"
+  become: yes
+  vars:
+      ip: "{{hostvars[inventory_hostname]['ansible_default_ipv4']['address']}}"
+      script_path: "templates/etcd_cluster/scripts"
+      
+  tasks:
+    - import_tasks: tasks/create_etcd_cluster_env.yml
+    - import_tasks: tasks/Install_etcd_to_VM.yml
+
+    - name: pip install docker-py
+      shell: "pip install docker-py"
+      args:
+        chdir: "{{ deploy_path }}"
+
+    - name: "remove container {{ cluster_container_name }}"
+      docker_container:
+        name: "{{ cluster_container_name }}"
+        state: absent
+
+    - name: create etcd cluster container {{ cluster_container_name }}
+      shell: "sh {{ deploy_path }}/create_etcd_clustre.sh"
+
+    - name: get cluster status
+      shell: "docker ps"
+      args:
+        chdir: "{{ deploy_path }}"
+      register: cluster_status
+
+    - name: show cluster status
+      debug:
+        var: cluster_status.stdout_lines
+
+    - import_tasks: tasks/Check_Etcd_Cluster.yml

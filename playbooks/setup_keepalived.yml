@@ -1,0 +1,37 @@
+- name: keepalived
+  hosts: "{{ applyHosts }}"
+  vars:
+      keepalived_script_dir: "/var/keepalived"
+  vars_files:
+    - "../vars/keepalived/{{ keepalived_env }}.yml"
+  become: yes
+  tasks:
+    - name: Update repositories cache and install keepalived package
+      apt:
+        name: keepalived
+        update_cache: yes
+
+    - name: create deploy dir "{{ keepalived_script_dir }}"
+      file:
+        path: "{{ keepalived_script_dir }}"
+        state: directory
+
+    - name: "copy templates/keepalived/check.j2"
+      template:
+        src: "../templates/keepalived/check.j2"
+        dest: "{{ keepalived_script_dir }}/check"
+        mode: "u=rwx,g=r,o=r"
+
+    - name: "copy templates/keepalived.js"
+      template:
+        src: "../templates/keepalived/keepalived.j2"
+        dest: "/etc/keepalived/keepalived.conf"
+        mode: "u=rw,g=r,o=r"
+      register: ka
+
+    - name: Make sure a service is running
+      systemd:
+        state: restarted
+        daemon_reload: yes
+        name: keepalived
+      when: ka.changed

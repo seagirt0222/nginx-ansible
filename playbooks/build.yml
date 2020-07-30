@@ -1,0 +1,22 @@
+- name: Deploy nginx images 
+  hosts: registry 
+  become: yes
+  vars:
+    Build_Version: "{{build_version}}" 
+    Source_Dir: "/usr/local/src/nginx" 
+  tasks:
+    - name: git clone repo
+      git:
+        repo: '{{ nginx_repo }}'
+        dest: "{{ Source_Dir }}"
+        version: "{{Build_Version}}"
+        update: yes
+        accept_hostkey: yes
+        key_file: "{{ Key_File }}"
+
+    - name: Build an image and push it to a private repo
+      docker_image:
+        path: "{{ Source_Dir }}/proxy"
+        name: "registry.gjsoft.local:5000/gjsoft/nginx_proxy"
+        tag: "{{ Build_Version }}"
+        push: "{{ Build_Push | default('no') }}"

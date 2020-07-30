@@ -1,0 +1,15 @@
+# create nginx conf dir 
+- name: create deploy dir "{{ nginx_config_path }}"
+  file:
+    path: "{{ nginx_config_path }}"
+    state: directory
+
+- name: "docker cp container/etc/nginx/nginx.conf"
+  shell: "docker cp {{ Docker_ContainerName }}:/etc/nginx/nginx.conf {{ Docker_Compose_Dir }}/nginx"
+  args:
+    chdir: "{{ Docker_Compose_Dir }}"
+
+- name: "Compress directory {{ Docker_Compose_Dir }}/nginx to {{ nginx_config_path }}/nginx.tgz"
+  archive:
+    path: "{{ Docker_Compose_Dir }}/nginx"
+    dest: "{{ nginx_config_path }}/nginx.tgz"
