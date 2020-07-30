@@ -1,0 +1,30 @@
+[local]
+localhost ansible_connection=local Docker_ContainerName=etcd0
+
+[local:vars]
+ETCDCTL_ENDPOINTS=http://192.168.100.15:2379
+ETCD_User=nginxread
+ETCD_Password=ED2C22E9DFA84C869C5CB0BCCE3071A8
+
+[registry]
+localhost ansible_connection=local 
+
+[registry:vars]
+Key_File=/home/ubuntu/.ssh/id_rsa
+nginx_repo=git@ssh.dev.azure.com:v3/bsdgroup/IT/nginx
+ssl_repo=git@ssh.dev.azure.com:v3/bsdgroup/IT/nginx-ssl
+
+[portal]
+192.168.100.19
+192.168.100.4
+192.168.100.26
+#192.168.100.38
+192.168.100.12
+
+[portal:vars]
+ansible_user=ubuntu
+ansible_ssh_private_key_file=~/.ssh/id_rsa
+Docker_Env=prod-portal
+ETCDCTL_ENDPOINTS=http://192.168.100.15:2379
+ETCD_User=nginxread
+ETCD_Password=ED2C22E9DFA84C869C5CB0BCCE3071A8

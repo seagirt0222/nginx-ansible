@@ -1,0 +1,85 @@
+
+[build]
+localhost ansible_connection=local 
+
+[build:vars]
+
+[docker:children]
+build
+
+[nginx:children]
+portal
+
+[portal]
+localhost ansible_connection=local 
+
+[portal:vars]
+Docker_Env=dev
+etcdCTL_ENDPOINTS=http://172.24.10.164:2379
+FW_etcdCTL_ENDPOINTS=172.24.10.164:2379
+
+[etcd]
+localhost ansible_connection=local Docker_ContainerName=etcd0
+
+[etcd:vars]
+ansible_sudo_pass=cde34RFVbgt5
+etcdCTL_ENDPOINTS=http://10.85.4.130:2379
+
+[etcd_backup]
+localhost ansible_connection=local 
+
+[etcd_backup:vars]
+ansible_sudo_pass=admin123@
+etcdCTL_ENDPOINTS=http://172.24.10.164:2379
+
+[registry]
+localhost ansible_connection=local 
+172.24.10.103 ansible_connection=ssh ansible_ssh_user=vagrant ansible_ssh_pass=admin123@
+
+[registry:vars]
+Key_File=/home/vagrant/.ssh/id_rsa
+
+[keepalived]
+172.24.10.72 ansible_connection=ssh ansible_ssh_user=vagrant ansible_ssh_pass=admin123@ keepalived_env=dev-master
+172.24.10.56 ansible_connection=ssh ansible_ssh_user=vagrant ansible_ssh_pass=admin123@ keepalived_env=dev-backup
+
+
+[keepalived:vars]
+ansible_sudo_pass=admin123@
+
+[etcd_keepalived]
+172.24.100.106 ansible_connection=ssh ansible_ssh_user=vagrant keepalived_env=etcd-dev-master
+172.24.100.104 ansible_connection=ssh ansible_ssh_user=vagrant keepalived_env=etcd-dev-backup
+172.24.100.103 ansible_connection=ssh ansible_ssh_user=vagrant keepalived_env=etcd-dev-backup
+
+[etcd_clustre]
+host1 ansible_ssh_host=172.24.100.106 Name="etcd1722410106"
+host2 ansible_ssh_host=172.24.100.104 Name="etcd1722410104"
+host3 ansible_ssh_host=172.24.100.103 Name="etcd1722410103"
+
+[etcd_clustre:vars]
+Etcd_Clustre_Name=etcd_clustre
+ansible_ssh_user=vagrant 
+Initial_Cluster_Token=gjsoft-etcd-token
+iplist="172.24.100.106 172.24.100.104 172.24.100.103"
+state=new
+cluster="etcd1722410106=http://172.24.100.106:2380,etcd1722410104=http://172.24.100.104:2380,etcd1722410103=http://172.24.100.103:2380"
+
+[add_etcd_clustre]
+host5 ansible_ssh_host=172.24.100.129 
+
+[add_etcd_clustre:vars]
+Etcd_Clustre_Name=etcd_clustre 
+ansible_ssh_user=vagrant 
+Initial_Cluster_Token=gjsoft-etcd-token 
+Name="etcd1722410129" 
+iplist="172.24.100.106 172.24.100.104 172.24.100.103 172.24.100.129"
+state=existing
+cluster="etcd1722410106=http://172.24.100.106:2380,etcd1722410104=http://172.24.100.104:2380,etcd1722410103=http://172.24.100.103:2380,etcd1722410129=http://172.24.100.129:2380"
+
+
+[add_etcd_keepalived]
+172.24.100.129 ansible_connection=ssh ansible_ssh_user=vagrant keepalived_env=etcd-dev-backup 
+[coredns]
+172.24.10.141 ansible_connection=ssh ansible_ssh_user=vagrant Key_File=/home/vagrant/.ssh/id_rsa 
+

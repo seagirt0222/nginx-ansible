@@ -1,0 +1,64 @@
+[build]
+localhost ansible_connection=local 
+
+[build:vars]
+ansible_sudo_pass=cde34RFVbgt5
+
+[build_ext]
+localhost 
+
+[build_ext:vars]
+ansible_user=testadmin
+ansible_ssh_private_key_file=~/.ssh/id_rsa
+ETCDCTL_ENDPOINTS=http://10.85.4.206:2379
+ETCD_User=nginxread
+ETCD_Password=ED2C22E9DFA84C869C5CB0BCCE3071A8
+ETCDCTL_API=3
+Docker_Env=prod-ext
+NGINX_GROUP=a01ext
+NGINX_APP_HTTPS_PORT=2443
+
+[nginx:children]
+portal
+
+[portal]
+109.244.68.2
+103.40.114.194 ansible_ssh_private_key_file=~/.ssh/id_rsa
+122.226.186.70 ansible_ssh_private_key_file=~/.ssh/id_rsa
+
+[portal:vars]
+ansible_user=root
+ansible_ssh_private_key_file=~/.ssh/id_rsa
+ansible_sudo_pass=cde34RFVbgt5
+Docker_Env=prod-portal
+FW_ETCDCTL_ENDPOINTS=10.85.4.106:2379
+ETCD_User=
+ETCD_Password=
+ETCDCTL_ENDPOINTS=http://127.0.0.1:2379
+ETCDCTL_API=3
+NGINX_GROUP=a01ext
+NGINX_APP_HTTPS_PORT=2443
+
+[etcd]
+10.85.4.106 ansible_user=jy ansible_ssh_private_key_file=~/.ssh/id_rsa Docker_ContainerName=etcd0
+
+[etcd:vars]
+ansible_sudo_pass=cde34RFVbgt5
+ETCDCTL_ENDPOINTS=http://10.85.4.106:2379
+
+[etcd_backup]
+109.244.68.2 ansible_user=root ansible_ssh_private_key_file=~/.ssh/id_rsa
+
+[etcd_backup:vars]
+ETCDCTL_ENDPOINTS=http://127.0.0.1:2379
+
+[registry]
+localhost ansible_connection=local 
+
+[registry:vars]
+ansible_sudo_pass=cde34RFVbgt5
+Key_File=/home/jy/.ssh/id_rsa
+
+[ssl_repo]
+localhost ansible_connection=local
+
