@@ -1,0 +1,5 @@
+# ext.yml
+Docker_ContainerPortHTTP: 9080
+Docker_ContainerPortHTTPS: 9443
+Docker_ContainerName: nginx_proxy_ext
+NGINX_PROXY_PROTOCOL: "false"

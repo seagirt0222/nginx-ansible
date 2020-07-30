@@ -1,0 +1,5 @@
+#dev.yml
+Docker_ContainerPortHTTP: 80
+Docker_ContainerPortHTTPS: 443
+Docker_ContainerName: nginx_proxy_dev
+NGINX_PROXY_PROTOCOL: "false"

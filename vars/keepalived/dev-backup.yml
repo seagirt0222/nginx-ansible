@@ -1,0 +1,6 @@
+keepalived_state: BACKUP
+keepalived_interface: eth0
+keepalived_route_id: 52
+keepalived_priority: 100
+keepalived_virtual_ip_1: "172.24.10.201"
+keepalived_virtual_ip_2: "" 

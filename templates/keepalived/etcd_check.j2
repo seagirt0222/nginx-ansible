@@ -1,0 +1,18 @@
+#!/bin/bash
+ng=$(docker ps | grep -o '{{ cluster_container_name }}')
+
+if [ $ng ];then
+    rs=$(curl -is -X GET http://127.0.0.1:2379/health |grep health| cut -d '"' -f 4 )
+    if [ ${rs} == "true" ];then
+        echo "ok"
+        exit 0;
+    else
+        echo "fail"
+        exit 1;
+    fi
+else
+    echo "fail"
+    exit 1;
+fi
+
+exit 0

@@ -1,0 +1,5 @@
+#haproxy.yml
+Docker_ContainerPortHTTP: 1080
+Docker_ContainerPortHTTPS: 1443
+Docker_ContainerName: nginx_proxy_haproxy
+NGINX_PROXY_PROTOCOL: "true"

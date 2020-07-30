@@ -1,0 +1,7 @@
+# portal master
+keepalived_state: BACKUP
+keepalived_interface: ens160
+keepalived_route_id: 52
+keepalived_priority: 100
+keepalived_virtual_ip_1: "10.85.4.230"
+keepalived_virtual_ip_2: "10.85.4.232"

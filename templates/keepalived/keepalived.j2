@@ -1,0 +1,18 @@
+vrrp_script chk_haproxy {
+    script "/var/keepalived/check"  # verify haproxy's pid existance
+    interval 2                   # check every 2 seconds
+    weight -2                    # if check failed, priority will minus 2
+}
+vrrp_instance VI_1 {
+    state {{ keepalived_state }}                 # Start-up default state
+    interface {{ keepalived_interface }}              # Binding interface
+    virtual_router_id {{ keepalived_route_id }}         # VRRP VRID(0-255), for distinguish vrrp's multicast
+    priority {{ keepalived_priority }}                 # VRRP PRIO
+    virtual_ipaddress {          # VIP, virtual ip
+        {{ keepalived_virtual_ip_1 }}
+        {{ keepalived_virtual_ip_2 }}
+    }
+    track_script {               # Scripts state we monitor
+        chk_haproxy
+    }
+}

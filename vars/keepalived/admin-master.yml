@@ -1,0 +1,7 @@
+# admin
+keepalived_state: MASTER
+keepalived_interface: ens160
+keepalived_route_id: 53
+keepalived_priority: 101
+keepalived_virtual_ip_1: "10.85.4.231"
+keepalived_virtual_ip_2: "10.85.4.208"

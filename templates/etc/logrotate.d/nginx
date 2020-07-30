@@ -1,0 +1,13 @@
+/var/log/nginx/*.log {
+       daily
+       #rotate 7
+       rotate 10
+       #delaycompress
+       create 0644 root root
+       #compress
+       notifempty
+       missingok
+       size 1M
+       copytruncate
+}
+

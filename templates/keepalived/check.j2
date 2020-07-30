@@ -1,0 +1,16 @@
+#!/bin/bash
+ng=$(docker ps | grep -o 'nginx_proxy_1')
+
+if [ ${ng} == "nginx_proxy_1" ];then
+    rs=$(curl -sL -w "%{http_code}" -H "Host:keepalived.gjsoft.local" http://127.0.0.1:80 -o /dev/null)
+    if [ ${rs} == "200" ];then
+        echo "ok"
+        exit 0;
+    else
+        echo "fail"
+        exit 1;
+    fi
+else
+    echo "fail"
+    exit 1;
+fi

@@ -1,0 +1,5 @@
+#prod.yml
+Docker_ContainerPortHTTP: 2080
+Docker_ContainerPortHTTPS: 2443
+Docker_ContainerName: nginx_proxy_app
+NGINX_PROXY_PROTOCOL: "false"

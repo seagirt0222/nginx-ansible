@@ -1,0 +1,5 @@
+#check.yml
+Docker_ContainerPortHTTP: 8080
+Docker_ContainerPortHTTPS: 8443
+Docker_ContainerName: nginx_proxy_check
+NGINX_PROXY_PROTOCOL: "false"
